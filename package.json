@@ -1,0 +1,31 @@
+{
+  "name": "featherprint-server",
+  "version": "1.0.0",
+  "description": "a server to provide access to a remote mySQL database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build:live",
+    "build:live": "nodemon ./node_modules/ts-node/dist/bin ./index.ts",
+    "start:single": "ts-node ./index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsmiller95/FeatherPrintServer.git"
+  },
+  "keywords": [
+  ],
+  "author": "Ryan Minor, Dan Miller (dsmiller95)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dsmiller95/FeatherPrintServer/issues"
+  },
+  "homepage": "https://github.com/dsmiller95/FeatherPrintServer#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "0.0.2",
+    "nodemon": "^1.11.0",
+    "ts-node": "^1.7.1",
+    "typescript": "^2.1.4"
+  }
+}

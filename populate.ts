@@ -142,9 +142,6 @@ export class DatabasePopulator{
 			var url = body.replace(/[^]+?;url[^]+?https/,"https");
 			url = url.replace(/\&[^]+/,"");
 
-			console.log("Getting the imageURL:\n\n\n\n");
-			console.log(model);
-			
 			var connection = ConnectionManager.getConnection();
 			
 			connection.connect();

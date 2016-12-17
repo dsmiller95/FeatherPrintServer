@@ -40,12 +40,12 @@ export class DatabasePopulator{
 	private parse(body: string): void{
 		var model: BirdModel = {name:"", desc:"", imageUrl:"", imageCap:"", status:"", sciName:"", behavior:"", rangeUrl:""};
 		var raw = body;
-		var query = "INSERT INTO `information`(`birdName`,`description`,`scientificName`,`behavior`,`conservation`) VALUES (";
+		//var query = "INSERT INTO `information`(`birdName`,`description`,`scientificName`,`behavior`,`conservation`) VALUES (";
 		
 		//Name
 		model.name = raw.replace(/[^]+?title":"/,"");
 		model.name = model.name.replace(/\",\"revisions\".+/,"");
-		query = query + ("\"" + model.name + "\", ");
+		//query = query + ("\"" + model.name + "\", ");
 		
 		//Trim raw for speed and neatness
 		raw = raw.replace(/[^]+?<root>/,"");//Trim front end of query
@@ -54,23 +54,23 @@ export class DatabasePopulator{
 		
 		//Desc(ription?)
 		model.desc = this.parseDescription(raw);
-		query = query + ("\"" + model.desc + "\", ");
+		//query = query + ("\"" + model.desc + "\", ");
 
 		//Scientific name
 		model.sciName = raw.substring(raw.indexOf("binomial")+44,raw.indexOf("<\/value>",raw.indexOf("binomial"))-2);
-		query = query + ("\"" + model.sciName + "\", ");
+		//query = query + ("\"" + model.sciName + "\", ");
 
 		//Behavior
 		if(raw.search(/==Behaviou?r==/) > -1){//If behavior section exists
 			model.behavior = this.parseBehavior(raw);
-			query = query + ("\"" + model.behavior + "\", ");
+		//	query = query + ("\"" + model.behavior + "\", ");
 		}else{
-			query = query + ("NULL, ");
+		//	query = query + ("NULL, ");
 		}
 		
 		//Conservation status
 		model.status = this.parseConservationStatus(raw);
-		query = query + ("\"" + model.status + "\")");
+		//query = query + ("\"" + model.status + "\")");
 
 		//Image URL
 		model.imageUrl = raw.replace(/.+?image.+?<value>/,"");//Get file name
@@ -88,7 +88,7 @@ export class DatabasePopulator{
 		model.rangeUrl = "https://en.wikipedia.org/w/api.php?action=query&titles=Image:" + encodeURIComponent(model.rangeUrl) + "&prop=imageinfo&iiprop=url";
 		
 		
-		query = this.buildQuery(model);
+		var query = this.buildQuery(model);
 
 		//Send to database
 		var connection = ConnectionManager.getConnection();
@@ -138,54 +138,51 @@ export class DatabasePopulator{
 	}
 
 	private imageUrl(api, model){
-		request(api, (function(model) { 
-			var model = model;
-			return function(error, response, body){
-				var url = body.replace(/[^]+?;url[^]+?https/,"https");
-				url = url.replace(/\&[^]+/,"");
-				
-				var connection = ConnectionManager.getConnection();
-				
-				connection.connect();
-				var query = "INSERT INTO `images`(`image`,`birdId`,`isTerritoryImage`,`caption`) VALUES (\"" + url + "\", (SELECT id FROM information WHERE birdName = \"" + model.name + "\"), 0, \"" + model.imageCap + "\")";
-				
-				//INSERT
-				connection.query(query, function(err, result) {
-					if (err){
-						console.log("Failed to add image entry");
-					}else{
-						console.log('ROWS AFFECTED: ' + result.affectedRows);
-					}
-				});
-				connection.end();
-			}
-		})(model));
+		request(api, (error, response, body) => {
+			var url = body.replace(/[^]+?;url[^]+?https/,"https");
+			url = url.replace(/\&[^]+/,"");
+
+			console.log("Getting the imageURL:\n\n\n\n");
+			console.log(model);
+			
+			var connection = ConnectionManager.getConnection();
+			
+			connection.connect();
+			var query = "INSERT INTO `images`(`image`,`birdId`,`isTerritoryImage`,`caption`) VALUES (\"" + url + "\", (SELECT id FROM information WHERE birdName = \"" + model.name + "\"), 0, \"" + model.imageCap + "\")";
+			
+			//INSERT
+			connection.query(query, function(err, result) {
+				if (err){
+					console.log("Failed to add image entry");
+				}else{
+					console.log('ROWS AFFECTED: ' + result.affectedRows);
+				}
+			});
+			connection.end();
+		});
 	}
 
 	private rangeUrl(api, model){
-		request(api, (function(model) { 
-			var model = model;
-			return function(error, response, body){
-				var url = body.replace(/[^]+?;url[^]+?https/,"https");
-				url = url.replace(/\&[^]+/,"");
-				
-				var connection = ConnectionManager.getConnection();
-				
-				connection.connect();
-				
-				var query = "INSERT INTO `images`(`image`,`birdId`,`isTerritoryImage`,`caption`) VALUES (\"" + url + "\", (SELECT id FROM information WHERE birdName = \"" + model.name + "\"), 1, NULL)";
+		request(api, (error, response, body) => {
+			var url = body.replace(/[^]+?;url[^]+?https/,"https");
+			url = url.replace(/\&[^]+/,"");
+			
+			var connection = ConnectionManager.getConnection();
+			
+			connection.connect();
+			
+			var query = "INSERT INTO `images`(`image`,`birdId`,`isTerritoryImage`,`caption`) VALUES (\"" + url + "\", (SELECT id FROM information WHERE birdName = \"" + model.name + "\"), 1, NULL)";
 
-				//INSERT
-				connection.query(query, function(err, result) {
-					if (err){
-						console.log("Failed to add rangeImage entry");
-					}else{
-						console.log('ROWS AFFECTED: ' + result.affectedRows);
-					}
-				});
-				connection.end();
-			}
-		})(model));
+			//INSERT
+			connection.query(query, function(err, result) {
+				if (err){
+					console.log("Failed to add rangeImage entry");
+				}else{
+					console.log('ROWS AFFECTED: ' + result.affectedRows);
+				}
+			});
+			connection.end();
+		});
 	}
 
 	private parseDescription(raw: string): string{

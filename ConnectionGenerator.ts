@@ -59,11 +59,12 @@ export class ConnectionManager{
 				connectionFactory.testConnection().then((connected) => {
 					if(connected){
 						//we got a good connection; resolve on it
+						console.log("using password");
 						resolve(connectionFactory);
 					}else{
 						//do it all over again
 						console.log("invalid password, try again");
-						return this.getPassword();
+						this.getPassword().then(resolve).catch(reject);
 					}
 				});
 			});

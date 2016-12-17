@@ -8,7 +8,7 @@ import * as express from 'express';
 import { InfoApp } from './app/birdInformation';
 
 
-var populateDatabase = false;
+var populateDatabase = true;
 
 console.log('Loaded');
 

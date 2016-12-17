@@ -11,6 +11,8 @@ request("https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisi
 
 });
 
+var password = 'REDACTED';
+
 //Helper function to parse out all that
 function parse(body){
 	var model={name:"", desc:"", imageUrl:"", imageCap:"", status:"", sciName:"", behavior:"", rangeUrl:"", };
@@ -67,7 +69,7 @@ function parse(body){
 	var connection = mysql.createConnection({
 	  host     : 'featherprint.cvzffvtv4h1p.us-east-1.rds.amazonaws.com',
 	  user     : 'MLBB',
-	  password : 'G1tR3kt123',
+	  password : password,
 	  database : 'FeatherPrint'
 	});
 
@@ -125,7 +127,7 @@ function imageUrl(api, model){
 			var connection = mysql.createConnection({
 			  host     : 'featherprint.cvzffvtv4h1p.us-east-1.rds.amazonaws.com',
 			  user     : 'MLBB',
-			  password : 'G1tR3kt123',
+			  password : password,
 			  database : 'FeatherPrint'
 			});
 			
@@ -155,7 +157,7 @@ function rangeUrl(api, model){
 			var connection = mysql.createConnection({
 			  host     : 'featherprint.cvzffvtv4h1p.us-east-1.rds.amazonaws.com',
 			  user     : 'MLBB',
-			  password : 'G1tR3kt123',
+			  password : password,
 			  database : 'FeatherPrint'
 			});
 			

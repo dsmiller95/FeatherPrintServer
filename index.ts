@@ -1,8 +1,12 @@
 
-import {DatabasePopulator} from './populate';
+import {DatabasePopulator, BirdModel} from './populate';
+
+import {ConnectionManager} from './ConnectionGenerator';
 
 console.log('Loaded');
 
-var database = new DatabasePopulator();
+ConnectionManager.init().then(() => {
+	var database = new DatabasePopulator();
 
-database.doThePopulate();
+	database.doThePopulate();
+});
